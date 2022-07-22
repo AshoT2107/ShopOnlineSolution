@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ShopOnline.Web.Services;
+using ShopOnline.Web.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -17,8 +19,8 @@ namespace ShopOnline.Web
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:44332/") });
+            builder.Services.AddTransient<IProductServices, ProductService>();
             await builder.Build().RunAsync();
         }
     }

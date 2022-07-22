@@ -7,8 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using ShopOnline.API.Data;
+using ShopOnline.API.Repositories;
+using ShopOnline.API.Repositories.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +38,7 @@ namespace ShopOnline.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShopOnline.API", Version = "v1" });
             });
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,7 +50,11 @@ namespace ShopOnline.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShopOnline.API v1"));
             }
-
+            app.UseCors(policy =>
+            policy.WithOrigins("http://localhost:44345", "https://localhost:44345")
+                .AllowAnyMethod()
+                .WithHeaders(HeaderNames.ContentType)
+            );
             app.UseHttpsRedirection();
 
             app.UseRouting();
